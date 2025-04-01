@@ -1,16 +1,26 @@
-const redis = require('redis');
+// ✅ FULLSTÄNDIG BACKEND – NU MED RENDER-FIX
+
+// 📁 config/redis.js
+const redis = require("redis");
+
+const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 
 const client = redis.createClient({
-  url: process.env.REDIS_URL,
+  url: redisUrl,
   socket: {
-    tls: true,
-    reconnectStrategy: () => 1000, // reconnect every second
+    tls: redisUrl.startsWith("rediss://"),
   },
 });
 
-client.on('error', (err) => console.error('❌ Redis error:', err));
-client.on('connect', () => console.log('✅ Redis connected'));
+client.on("error", (err) => console.error("❌ Redis error:", err));
+client.on("connect", () => console.log("✅ Redis connected"));
 
-client.connect();
+(async () => {
+  try {
+    await client.connect();
+  } catch (err) {
+    console.error("❌ Redis connect failed:", err);
+  }
+})();
 
 module.exports = client;
