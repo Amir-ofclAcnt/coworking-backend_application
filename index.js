@@ -7,6 +7,8 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const { Server } = require("socket.io");
+const devRoutes = require('./routes/devRoutes');
+
 
 const connectSocket = require("./sockets/notificationSocket");
 const authRoutes = require("./routes/authRoutes");
@@ -38,6 +40,7 @@ app.use(responseWrapper);
 app.use("/api/auth", authRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use('/api/dev', devRoutes);
 
 // Error handler
 app.use(errorHandler);
