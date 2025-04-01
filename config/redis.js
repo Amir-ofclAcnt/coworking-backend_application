@@ -1,3 +1,6 @@
+// ✅ FULLSTÄNDIG BACKEND – NU MED RENDER-FIX (REDIS KEEP-ALIVE MED PING-FIX)
+
+// 📁 config/redis.js
 const redis = require('redis');
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
@@ -20,16 +23,18 @@ client.on('error', (err) => {
 
 client.on('connect', () => {
   console.log('✅ Redis connected');
-  
-  // 🔁 Håll anslutningen aktiv med ping var 25 sek
+});
+
+client.on('ready', () => {
+  console.log('⚡ Redis ready – setting up keep-alive ping');
   setInterval(async () => {
     try {
       await client.ping();
-      console.log('📡 Redis ping');
+      console.log('📡 Redis ping successful');
     } catch (err) {
       console.warn('⚠️ Redis ping failed:', err.message);
     }
-  }, 25000);
+  }, 25000); // ping var 25:e sekund
 });
 
 (async () => {
